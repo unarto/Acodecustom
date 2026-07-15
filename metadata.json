@@ -1,0 +1,6 @@
+{
+  "name": "Clean Architecture Workspace",
+  "description": "Workspace React & TypeScript dengan standar Arsitektur Bersih (Clean Architecture) tingkat lanjut.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
