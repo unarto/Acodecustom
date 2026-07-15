@@ -195,7 +195,7 @@ jobs:
           mv platforms/android/app/build/outputs/apk/debug/app-debug.apk ${{ env.NORMAL_APK_PATH }}
 
       - name: Upload normal artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ steps.meta.outputs.normal_artifact_name }}
           path: ${{ env.NORMAL_APK_PATH }}
@@ -209,7 +209,7 @@ jobs:
 
       - name: Upload fdroid artifact
         if: ${{ !inputs.is_PR }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ steps.meta.outputs.fdroid_artifact_name }}
           path: ${{ env.FDROID_APK_PATH }}
