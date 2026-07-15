@@ -15,8 +15,7 @@ concurrency:
 
 jobs:
   build:
-    if: ${{ github.repository_owner == 'Acode-Foundation' }}
-    uses: Acode-Foundation/acode/.github/workflows/nightly-build.yml@main
+    uses: ./.github/workflows/nightly-build.yml
     permissions:
       contents: read
       pull-requests: read
@@ -30,7 +29,7 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
-    if: ${{ github.repository_owner == 'Acode-Foundation' && needs.build.result == 'success' }}
+    if: ${{ needs.build.result == 'success' }}
     permissions:
       contents: write
       id-token: write
@@ -45,7 +44,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Required for tags
           persist-credentials: true
@@ -67,13 +66,13 @@ jobs:
 
 
       - name: Download normal APK artifact
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@v4
         with:
           name: ${{ needs.build.outputs.normal_artifact_name }}
           path: ${{ env.ARTIFACTS_DIR }}/normal
 
       - name: Download fdroid APK artifact
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@v4
         with:
           name: ${{ needs.build.outputs.fdroid_artifact_name }}
           path: ${{ env.ARTIFACTS_DIR }}/fdroid
@@ -166,7 +165,7 @@ jobs:
       - name: Create nightly prerelease
         if: steps.publish_gate.outputs.should_publish == 'true'
         id: gh_release
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@v2
         env:
             FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
         with:
@@ -216,7 +215,7 @@ jobs:
     if: ${{ needs.release.outputs.should_publish == 'true' && needs.release.outputs.release_output_url }}
     permissions:
       contents: read
-    uses: Acode-Foundation/acode/.github/workflows/community-release-notifier.yml@main
+    uses: ./.github/workflows/community-release-notifier.yml
     with:
       url: ${{ needs.release.outputs.release_output_url }}
       tag_name: ${{ needs.release.outputs.nightly_tag_name }}

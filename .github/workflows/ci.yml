@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout Actions Repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
 
       - name: Check spelling
         uses: crate-ci/typos@master
@@ -26,9 +26,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
 
       - name: Setup Biome
+         # Note: Biome setup action may not have v2, but setup-biome@v2 or v1 is fine. We keep setup-biome@v2 or use setup-biome@v2 if it exists
         uses: biomejs/setup-biome@v2
 
       - name: Run Biome
@@ -44,9 +45,9 @@ jobs:
     if: github.event_name == 'pull_request'
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
       - name: Use Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           cache: npm
           cache-dependency-path: '**/package-lock.json'

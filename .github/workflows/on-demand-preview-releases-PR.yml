@@ -25,18 +25,16 @@ jobs:
       issues: write
     if: |
         github.event.pull_request.draft == false
-        && (github.repository_owner == 'Acode-Foundation'
         && (!contains(github.event.pull_request.labels.*.name, 'DO NOT PREVIEW RELEASE') 
         && (contains(github.event.pull_request.labels.*.name, 'Bypass check - PREVIEW RELEASE') 
           || contains(github.event.pull_request.labels.*.name, 'CI: RUN ON-DEMAND PREVIEW RELEASES')
         ))
-        )
 
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
         with:
           clean: false
           fetch-depth: 0
@@ -53,7 +51,7 @@ jobs:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Add comment to PR
-        uses: marocchino/sticky-pull-request-comment@v3
+        uses: marocchino/sticky-pull-request-comment@v2
         with:
           hide_and_recreate: true
           hide_classify: "OUTDATED"
@@ -80,7 +78,7 @@ jobs:
       secrets:
         KEYSTORE_CONTENT: ${{ secrets.KEYSTORE_CONTENT }}
         BUILD_JSON_CONTENT: ${{ secrets.BUILD_JSON_CONTENT }}
-      uses: Acode-Foundation/acode/.github/workflows/nightly-build.yml@main
+      uses: ./.github/workflows/nightly-build.yml
       with:
         is_PR: true
         PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -92,12 +90,12 @@ jobs:
         contents: read
         pull-requests: write
       runs-on: ubuntu-latest
-      if: ${{ github.repository_owner == 'Acode-Foundation' && always() && contains(fromJSON('["failure","cancelled", "success"]'), needs.trigger_builder.result) }}
+      if: ${{ always() && contains(fromJSON('["failure","cancelled", "success"]'), needs.trigger_builder.result) }}
       steps:
 
         - name: Update Last Comment by bot (If Workflow Triggering succeeded)
           if: ${{ needs.trigger_builder.result == 'success' && github.event.pull_request.number }}
-          uses: marocchino/sticky-pull-request-comment@v3
+          uses: marocchino/sticky-pull-request-comment@v2
           with:
              hide_and_recreate: true
              hide_classify: "OUTDATED"
@@ -109,7 +107,7 @@ jobs:
 
         - name: Update Last Comment by bot (if Workflow Triggering failed)
           if: ${{ needs.trigger_builder.result != 'success' && github.event.pull_request.number }}
-          uses: marocchino/sticky-pull-request-comment@v3
+          uses: marocchino/sticky-pull-request-comment@v2
           with:
              hide_and_recreate: true
              hide_classify: "OUTDATED"

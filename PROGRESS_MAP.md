@@ -34,4 +34,8 @@ Dokumentasi progress implementasi fitur baru untuk File Manager Acode.
 - [x] **Integrasi Port 3000 AI Studio Server** - *Selesai (2026-07-14)*
   - Membuat server statis kustom `aistudio-server.js` untuk menyajikan folder `www/` pada port 3000 di host `0.0.0.0`.
   - Menyesuaikan script `package.json` (`build`, `start`, `dev`) agar otomatis mengompilasi dengan Rspack dan meluncurkan server kustom di port 3000.
+- [x] **Perbaikan Alur Kerja GitHub (GitHub Workflows)** - *Selesai (2026-07-15)*
+  - Menghapus pembatasan kepemilikan keras (`github.repository_owner == 'Acode-Foundation'`) sehingga alur kerja dapat dijalankan oleh fork pengguna (`unarto`).
+  - Mengubah pemanggilan *reusable workflows* eksternal ke format referensi lokal (`./.github/workflows/...`) demi portabilitas dan menghindari masalah autentikasi.
+  - Memperbarui tag versi fiktif/tidak valid dari dependensi Actions (seperti `@v7`, `@v6`, `@v5`, `@v8`) ke versi stabil resmi terbaru (`@v4`, `@v5`, `@v2`, `@v9`) guna mencegah kegagalan *runner*.
 
