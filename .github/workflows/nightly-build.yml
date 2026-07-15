@@ -70,13 +70,20 @@ jobs:
       fdroid_artifact_name: ${{ steps.meta.outputs.fdroid_artifact_name }}
 
     steps:
-      - name: Validate required secrets (Fast Fail If missing on nightly builds)
+      - name: Validate required secrets (Warn if missing instead of failing on forks)
+        id: check_secrets
         if: ${{ !inputs.is_PR || inputs.is_trusted_pr }}
         env:
           KEYSTORE_CONTENT: ${{ secrets.KEYSTORE_CONTENT }}
           BUILD_JSON_CONTENT: ${{ secrets.BUILD_JSON_CONTENT }}
         run: |
-          [ -n "$KEYSTORE_CONTENT" ] && [ -n "$BUILD_JSON_CONTENT" ] || { echo "::error title=Missing secrets::KEYSTORE_CONTENT or BUILD_JSON_CONTENT is missing"; exit 1; }
+          if [ -n "$KEYSTORE_CONTENT" ] && [ -n "$BUILD_JSON_CONTENT" ]; then
+            echo "has_secrets=true" >> "$GITHUB_OUTPUT"
+            echo "✅ Keystore and Build Config secrets found. App will be signed."
+          else
+            echo "has_secrets=false" >> "$GITHUB_OUTPUT"
+            echo "::warning title=Missing secrets::KEYSTORE_CONTENT or BUILD_JSON_CONTENT is missing. App will be built unsigned/debug-signed."
+          fi
       
       - name: Logging & summaries
         run: |
@@ -123,10 +130,36 @@ jobs:
           echo "fdroid_artifact_name=app-debug-fdroid-$GIT_COMMIT" >> "$GITHUB_OUTPUT"
 
       - name: Inject signing files
-        if: ${{ !inputs.is_PR || inputs.is_trusted_pr }}
+        if: ${{ steps.check_secrets.outputs.has_secrets == 'true' && (!inputs.is_PR || inputs.is_trusted_pr) }}
         run: |
           echo "${{ secrets.KEYSTORE_CONTENT }}" | base64 -d > "${{ env.STORE_FILE_PATH }}"
           echo "${{ secrets.BUILD_JSON_CONTENT }}" | base64 -d > "${{ env.BUILD_JSON_PATH }}"
+
+      - name: Inject automatic debug signing files
+        if: ${{ steps.check_secrets.outputs.has_secrets != 'true' || (inputs.is_PR && !inputs.is_trusted_pr) }}
+        run: |
+          echo "⚠️ No signing secrets or untrusted PR. Generating an automatic test debug.keystore..."
+          keytool -genkey -v -keystore "${{ env.STORE_FILE_PATH }}" -alias androiddebugkey -keypass android -storepass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+          cat <<EOF > "${{ env.BUILD_JSON_PATH }}"
+          {
+            "android": {
+              "debug": {
+                "keystore": "${{ env.STORE_FILE_PATH }}",
+                "storePassword": "android",
+                "alias": "androiddebugkey",
+                "password": "android",
+                "keystoreType": "jks"
+              },
+              "release": {
+                "keystore": "${{ env.STORE_FILE_PATH }}",
+                "storePassword": "android",
+                "alias": "androiddebugkey",
+                "password": "android",
+                "keystoreType": "jks"
+              }
+            }
+          }
+          EOF
 
       - name: Extract base version
         id: base
@@ -182,7 +215,7 @@ jobs:
           path: ${{ env.FDROID_APK_PATH }}
 
       - name: Cleanup signing files
-        if: ${{ !inputs.is_PR || inputs.is_trusted_pr }}
+        if: always()
         run: rm -f ${{ env.STORE_FILE_PATH }} ${{ env.BUILD_JSON_PATH }}
       
       - name: Post Build - SHA256 signature computation (output)
