@@ -47,7 +47,7 @@ const config = {
 	FOXBIZ_URL: "https://foxbiz.io",
 
 	get HAS_PRO() {
-		return hasPro;
+		return true;
 	},
 
 	set HAS_PRO(value) {

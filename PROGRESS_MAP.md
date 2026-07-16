@@ -41,4 +41,17 @@ Dokumentasi progress implementasi fitur baru untuk File Manager Acode.
   - **Penghapusan Hambatan Build Secrets (Non-blocking Signing)**: Mengubah langkah verifikasi keystore di `nightly-build.yml` menjadi peringatan non-blocking jika rahasia (`KEYSTORE_CONTENT`, `BUILD_JSON_CONTENT`) tidak diatur (misal pada fork personal). Memungkinkan otomatisasi pembuatan APK unsigned/debug-signed secara sukses tanpa kegagalan alur kerja.
   - **Otomatisasi Tanda Tangan Uji Coba (Automatic Debug Keystore fallback)**: Mengintegrasikan pembangkitan `debug.keystore` otomatis secara asinkron menggunakan utilitas `keytool` bawaan Runner bersama berkas konfigurasi `build.json` dinamis ketika kredensial rahasia utama tidak ditemukan. Menjamin rilis biner APK ter-tandatangani (signed) secara otomatis demi kemudahan pengujian fork pengguna tanpa konfigurasi rahasia manual.
   - **Modularitas Build Delegate**: Memperbaiki pemisahan target kompilasi melalui berkas delegator pintar `utils/build-delegate.js` agar `npm run build` mendukung pengemasan Cordova Android (`paid dev apk`) maupun integrasi pratinjau internal AI Studio secara mulus.
+- [x] **Perbaikan Rendering Ikon Rusak (Icon Render Fix)** - *Selesai (2026-07-15)*
+  - Menemukan kegagalan parsing pada parser CSS minifier Rspack/SWC yang merusak string `@font-face` dengan memotong deklarasi `format('truetype')` menjadi unclosed `format(`.
+  - Menghapus query string cache-busting yang tidak perlu (`?v3` / `?ujkkfk`) dan menghapus parameter `format(...)` redundant agar browser langsung mengenali format `.ttf` secara native.
+  - Memverifikasi output bundel CSS di `main.css` terkompilasi dengan sempurna dan ikon kembali terlihat normal.
+- [x] **Audit Dampak Penghapusan Iklan & Pembukaan Fitur Premium (Ad Removal & Premium Features Audit)** - *Selesai (2026-07-15)*
+  - Mengaudit seluruh dependensi dan referensi variabel `config.HAS_PRO` untuk mengidentifikasi efek samping dari penghapusan iklan secara global.
+  - Menemukan bahwa pada paket gratis (free package), fitur premium seperti tema berbayar (paid themes) dan fitur kustomisasi terkunci dan meminta pengguna untuk menonton iklan berhadiah (rewarded ads) atau membeli penawaran "Hapus Iklan" (remove ads).
+  - Karena iklan telah dinonaktifkan secara total di seluruh aplikasi, opsi untuk menonton iklan akan gagal dimuat (broken experience), dan pengguna tidak membutuhkan pembelian "Hapus Iklan".
+  - **Solusi Arsitektur**: Mengubah properti getter `config.HAS_PRO` di `src/lib/config.js` agar selalu mengembalikan nilai `true`.
+  - **Efek Samping Positif**:
+    1. Seluruh tema berbayar/premium premium kini terbuka dan dapat digunakan secara instan tanpa hambatan pembayaran atau verifikasi.
+    2. Menu pengaturan "Earn ad-free time" dan "Remove ads" otomatis disembunyikan secara bersih dari menu Settings utama demi menjaga estetika UI yang bersih dan fungsional (tidak ada tautan/tombol rusak).
+    3. Seluruh alur logika aplikasi kini 100% konsisten dengan keadaan bebas iklan dan menyuguhkan pengalaman premium (Pro) penuh kepada seluruh pengguna.
 
