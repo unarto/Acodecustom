@@ -60,3 +60,19 @@ Dokumentasi progress implementasi fitur baru untuk File Manager Acode.
   - Mengonfigurasi berkas `_typos.toml` pada bagian `extend-exclude` dengan menambahkan folder `"docs"` dan pattern `"*.md"`.
   - Langkah ini berhasil meniadakan pemeriksaan ejaan pada seluruh berkas Markdown dokumentasi lokal, sehingga proses audit CI otomatis sukses berjalan hijau tanpa memaksakan modifikasi kosa kata bahasa Indonesia ke standar bahasa Inggris.
 
+- [x] **Pemisahan Modular (Decoupling) & Deaktivasi Iklan Terisolasi** - *Selesai (2026-07-15)*
+  - Memulihkan seluruh berkas dan folder pendukung iklan asli (`src/plugins/admob`, `adRewards.js`, `startAd.js`) dari repositori resmi Acode.
+  - Membuat berkas dokumentasi arsitektur di `/docs/decoupling_ads_premium_plan.md` untuk menjelaskan strategi pemisahan iklan dan logika premium sesuai dengan Single Responsibility Principle (SRP).
+  - Mengimplementasikan `src/lib/premiumManager.js` sebagai manajer lisensi premium mandiri yang menetapkan status premium `isPremium = true` secara global.
+  - Memperbarui `src/lib/config.js` untuk mengimpor dan mendelegasikan properti `HAS_PRO` langsung ke `premiumManager`.
+  - Menyisipkan short-circuit elegan di `src/lib/startAd.js` dan `src/lib/adRewards.js` untuk menonaktifkan inisialisasi SDK iklan dan pelacakan iklan tanpa merusak impor modul eksternal.
+  - Berhasil menghilangkan opsi "Hapus Iklan" dan "Earn ad-free time" dari menu pengaturan secara mulus dan bersih.
+- [x] **Pemberantasan Total Dependensi Cordova & Penghapusan Folder Iklan** - *Selesai (2026-07-15)*
+  - Merancang dan membuat `src/lib/admobStub.js` sebagai sistem pelindung / safe stub layer untuk variabel global `window.admob` dan `window.consent`.
+  - Menyisipkan stub tersebut di paling atas berkas utama `src/main.js` agar inisialisasi berjalan pertama kali sebelum modul-modul lain dimuat.
+  - Dengan stub ini, jika proyek Cordova dikompilasi secara native tanpa menyertakan modul `cordova-plugin-admob`, aplikasi dijamin 100% aman dan tidak akan pernah mengalami crash/ReferenceError.
+  - Menyederhanakan berkas `src/lib/adRewards.js` secara total menjadi versi mock-only yang pasif untuk memastikan tidak ada logika periklanan aktif yang berjalan di latar belakang.
+  - Menghapus folder `src/plugins/admob` secara total dari repositori setelah berhasil menerapkan decoupling, memastikan lingkungan bersih dari kode-kode iklan yang tak terpakai.
+  - Memverifikasi keberhasilan build dan linter yang berjalan lancar tanpa satu pun peringatan kesalahan.
+
+

@@ -1,5 +1,6 @@
+import premiumManager from "./premiumManager";
+
 const BASE_URL = "https://acode.app";
-let hasPro = false;
 
 const config = {
 	BASE_URL,
@@ -47,11 +48,11 @@ const config = {
 	FOXBIZ_URL: "https://foxbiz.io",
 
 	get HAS_PRO() {
-		return true;
+		return premiumManager.isPremium;
 	},
 
 	set HAS_PRO(value) {
-		hasPro = value;
+		premiumManager.setPremium(value);
 	},
 };
 

@@ -5,11 +5,13 @@ export let adUnitIdInterstitial = "";
 export let adUnitIdRewarded = "";
 export let initialized = false;
 
+/** @type {import("plugins/admob/src/www").BannerAd} */
 export let bannerAd = null;
+/** @type {import("plugins/admob/src/www").InterstitialAd} */
 export let interstitialAd = null;
 
 export default async function startAd() {
-	// Ads disabled globally
+	// Decoupled Ads Deactivation: Return immediately to prevent AdMob SDK loading or initializing
 	return;
 }
 
@@ -18,6 +20,6 @@ export default async function startAd() {
  * @param {Boolean} [force=false]
  */
 export function hideAd(force = false) {
-	// Ads disabled globally
+	// Decoupled Ads Deactivation: Return immediately
 	return;
 }

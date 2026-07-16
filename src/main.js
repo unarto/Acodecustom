@@ -1,5 +1,6 @@
 import "core-js/stable";
 import "html-tag-js/dist/polyfill";
+import "lib/admobStub";
 
 import "./main.scss";
 import "res/icons/style.css";
