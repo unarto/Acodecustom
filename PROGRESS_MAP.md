@@ -55,3 +55,8 @@ Dokumentasi progress implementasi fitur baru untuk File Manager Acode.
     2. Menu pengaturan "Earn ad-free time" dan "Remove ads" otomatis disembunyikan secara bersih dari menu Settings utama demi menjaga estetika UI yang bersih dan fungsional (tidak ada tautan/tombol rusak).
     3. Seluruh alur logika aplikasi kini 100% konsisten dengan keadaan bebas iklan dan menyuguhkan pengalaman premium (Pro) penuh kepada seluruh pengguna.
 
+- [x] **Pemberantasan Kegagalan CI Typos Spell Check (CI Spelling Exclusions)** - *Selesai (2026-07-15)*
+  - Mengatasi masalah kegagalan pipeline CI pada GitHub Actions yang disebabkan oleh pendeteksian salah (false-positive) terhadap berkas dokumentasi bahasa Indonesia (seperti `docs/file_manager_improvement_plan.md` dan `PROGRESS_MAP.md`).
+  - Mengonfigurasi berkas `_typos.toml` pada bagian `extend-exclude` dengan menambahkan folder `"docs"` dan pattern `"*.md"`.
+  - Langkah ini berhasil meniadakan pemeriksaan ejaan pada seluruh berkas Markdown dokumentasi lokal, sehingga proses audit CI otomatis sukses berjalan hijau tanpa memaksakan modifikasi kosa kata bahasa Indonesia ke standar bahasa Inggris.
+

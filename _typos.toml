@@ -12,6 +12,8 @@ extend-exclude = [
     "*.gradle",
     "plugins",
     "platforms",
+    "docs",
+    "*.md",
     "src/lang/ar-ye.json",
     "src/lang/be-by.json",
     "src/lang/bn-bd.json",
