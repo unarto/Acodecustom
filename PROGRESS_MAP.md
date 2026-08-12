@@ -75,4 +75,15 @@ Dokumentasi progress implementasi fitur baru untuk File Manager Acode.
   - Menghapus folder `src/plugins/admob` secara total dari repositori setelah berhasil menerapkan decoupling, memastikan lingkungan bersih dari kode-kode iklan yang tak terpakai.
   - Memverifikasi keberhasilan build dan linter yang berjalan lancar tanpa satu pun peringatan kesalahan.
 
+- [x] **Penyediaan Helper JavaScript SAF & VFS Terisolasi** - *Selesai (2026-07-17)*
+  - Merancang berkas pembantu Storage Access Framework (`/saf_helper.js`) di root direktori untuk membungkus seluruh panggilan API native `sdcard` menggunakan Promise ES6 yang bersih.
+  - Berkas ini menyertakan dokumentasi teknis mendalam tentang akar penyebab kesalahan `EACCES (Permission denied)` di Android 11+ dan cara mengatasinya.
+  - Merancang sistem Virtual File System (`/vfs_helper.js`) di root direktori sebagai antarmuka tunggal untuk merutekan operasi file secara dinamis berdasarkan protokol URL (`file://`, `content://`, dsb.).
+  - Berkas-berkas ini diekspos secara global ke objek `window` agar mudah digunakan oleh pengguna pasca-unduhan.
+  - **Pembersihan Pasca-Unduh**: Berhasil membersihkan berkas transien `/saf_helper.js` dan `/vfs_helper.js` dari root repositori setelah diunduh secara lokal oleh pengguna, guna memastikan repositori produksi tetap bersih dan rapi.
+
+- [x] **Pembuatan Dokumen Aturan Agen AI (AGENTS.md)** - *Selesai (2026-07-18)*
+  - Membuat berkas aturan `/AGENTS.md` di root direktori untuk memastikan Agen AI di masa mendatang dilarang menggunakan data simulasi/mock/placeholder demi mempermudah pelacakan bug asli.
+
+
 
