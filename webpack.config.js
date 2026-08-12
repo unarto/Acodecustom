@@ -52,7 +52,7 @@ module.exports = (env, options) => {
       test: /(?<!\.m)\.(sa|sc|c)ss$/,
       use: [
         {
-          loader: MiniCssExtractPlugin.loader,
+          loader: MiniCssExtractPlugin.loader, options: { publicPath: "" },
         },
         'css-loader',
         'postcss-loader',
@@ -118,7 +118,7 @@ module.exports = (env, options) => {
       filename: '[name].js',
       chunkFilename: '[name].chunk.js',
       assetModuleFilename: '[name][ext]',
-      publicPath: '/build/',
+      publicPath: 'auto',
       clean: true,
     },
     module: {

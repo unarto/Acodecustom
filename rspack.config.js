@@ -110,7 +110,7 @@ module.exports = (env, options) => {
       test: /\.(?<!\.m\.)(sa|sc|c)ss$/,
       type: 'javascript/auto',
       use: [
-        rspack.CssExtractRspackPlugin.loader,
+        { loader: rspack.CssExtractRspackPlugin.loader, options: { publicPath: '' } },
         'css-loader',
         'postcss-loader',
         'sass-loader',
@@ -132,7 +132,7 @@ module.exports = (env, options) => {
       filename: '[name].js',
       chunkFilename: '[name].chunk.js',
       assetModuleFilename: '[name][ext]',
-      publicPath: devOrigin ? ''.concat(devOrigin, '/build/') : '/build/',
+      publicPath: devOrigin ? ''.concat(devOrigin, '/build/') : 'auto',
       clean: !isDev,
     },
     module: {
